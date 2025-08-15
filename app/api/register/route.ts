@@ -3,28 +3,25 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const form = await req.formData();
-    const data = {
-      fullName: String(form.get("fullName") || ""),
-      email: String(form.get("email") || ""),
-      phone: String(form.get("phone") || ""),
-      category: String(form.get("category") || ""),
-      clubTeam: String(form.get("clubTeam") || ""),
-      emergencyName: String(form.get("emergencyName") || ""),
-      emergencyPhone: String(form.get("emergencyPhone") || ""),
-      consent: form.get("consent") === "on",
-      notes: String(form.get("notes") || ""),
-    };
+    const body = await req.json();
 
-    if (!data.fullName || !data.email || !data.category || !data.consent) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const newEntrant = await prisma.entrant.create({
+      data: {
+        fullName: body.fullName,
+        email: body.email,
+        phone: body.phone,
+        category: body.category,
+        clubTeam: body.clubTeam || "",
+        emergencyName: body.emergencyName,
+        emergencyPhone: body.emergencyPhone,
+        consent: body.consent,
+        notes: body.notes || "",
+      },
+    });
 
-    await prisma.entrant.create({ data });
-
-    return NextResponse.json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ success: true, entrant: newEntrant });
+  } catch (err) {
+    console.error("Error creating entrant:", err);
+    return NextResponse.json({ success: false, error: (err as Error).message }, { status: 500 });
   }
 }
