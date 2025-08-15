@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 248 248 248;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-neutral-900;
+}
+
+.container {
+  @apply max-w-5xl mx-auto px-4;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium border border-neutral-200 shadow-sm hover:shadow transition;
+}
+
+.card {
+  @apply rounded-2xl border border-neutral-200 shadow-sm p-6 bg-white;
+}
